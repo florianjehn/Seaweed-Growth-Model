@@ -112,7 +112,7 @@ class OceanSection:
         section_df["months_since_war"] = list(range(-3, section_df.shape[0] - 3, 1))
         section_df.set_index("months_since_war", inplace=True)
         # Add the dataframe to the class
-        section_df.name = self.name
+        section_df.columns.name = self.name
         self.section_df = section_df
 
     def calculate_mean_growth_rate(self):

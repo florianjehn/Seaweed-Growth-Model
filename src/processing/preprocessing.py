@@ -28,7 +28,7 @@ def get_area(path, file):
     area.to_csv("area_grid.csv", sep=";")
 
 
-def prepare_gridded_data(path, folder, scenario, file_ending, global_or_US):
+def prepare_gridded_data(path, folder, scenario, file_ending, global_or_country):
     """
     Reads in the pickles of the geodataframes of the
     different environmental paramters. Checks if they
@@ -38,7 +38,7 @@ def prepare_gridded_data(path, folder, scenario, file_ending, global_or_US):
         path: the path for the pickled files
         folder: the folder where the pickled files are
         file_ending: the ending of the pickled files
-        global_or_US: if "global", the global data is used
+        global_or_country: if "global", the global data is used
         scenario: the scenario to use (e.g. 150tg)
     Returns:
         None, but saves a pickle of the dictionary of geo
@@ -109,7 +109,7 @@ def prepare_gridded_data(path, folder, scenario, file_ending, global_or_US):
     # Make pickle out of it, so we don't have to run this every time
     full_path = path + os.sep + "data" + os.sep + "interim_data" + os.sep + scenario
     with open(
-        full_path + os.sep + "data_gridded_all_parameters_" + global_or_US + ".pkl",
+        full_path + os.sep + "data_gridded_all_parameters_" + global_or_country + ".pkl",
         "wb",
     ) as handle:
         pickle.dump(data_dict, handle, protocol=pickle.HIGHEST_PROTOCOL)

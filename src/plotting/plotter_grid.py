@@ -20,12 +20,12 @@ plt.style.use(
 )
 
 
-def cluster_spatial(growth_df, global_or_US, scenario):
+def cluster_spatial(growth_df, global_or_country, scenario):
     """
     Creates a spatial plot of the clusters
     Arguments:
         growth_df: a dataframe of the growth rate
-        global_or_US: a string of either "global" or "US" that indicates the scale
+        global_or_country: a string of either "global" or "US" that indicates the scale
     Returns:
         None, but saves the plot
     """
@@ -43,16 +43,19 @@ def cluster_spatial(growth_df, global_or_US, scenario):
     growth_df.set_crs(epsg=4326, inplace=True)
     growth_df.to_crs(global_map.crs, inplace=True)
     growth_df["cluster"] = growth_df["cluster"].astype(str)
-    ax = growth_df.plot(column="cluster", legend=True, cmap=custom_map)
+    ax = growth_df.plot(column="cluster", legend=True, cmap=custom_map, marker='s', markersize=80)
     fig = plt.gcf()
     fig.set_size_inches(12, 12)
     global_map.plot(ax=ax, color="lightgrey", edgecolor="black", linewidth=0.2)
     ax.set_xlabel("Longitude")
     ax.set_ylabel("Latitude")
     ax.get_legend().set_title("Cluster")
-    if global_or_US == "US":
+    if global_or_country == "US":
         ax.set_ylim(18, 55)
         ax.set_xlim(-130, -65)
+    elif global_or_country == "AUS":
+        ax.set_ylim(-50, -10)
+        ax.set_xlim(100, 180)
     else:
         ax.set_ylim(-75, 85)
         ax.set_xlim(-180, 180)
@@ -64,14 +67,14 @@ def cluster_spatial(growth_df, global_or_US, scenario):
         + scenario
         + os.sep
         + "cluster_spatial_"
-        + global_or_US
+        + global_or_country
         + ".png",
         dpi=350,
         bbox_inches="tight",
     )
 
 
-def growth_rate_spatial_by_year(growth_df, global_or_US, scenario, optimal_growth_rate):
+def growth_rate_spatial_by_year(growth_df, global_or_country, scenario, optimal_growth_rate):
     """
     Plots the growth rate by year. This includes the first
     three months without nuclear war, in the case of the first year
@@ -104,6 +107,8 @@ def growth_rate_spatial_by_year(growth_df, global_or_US, scenario, optimal_growt
             column="growth_rate",
             legend=True,
             cmap="viridis",
+            marker='s',
+            markersize=80,
             vmin=0,
             vmax=optimal_growth_rate,
             legend_kwds={
@@ -115,9 +120,12 @@ def growth_rate_spatial_by_year(growth_df, global_or_US, scenario, optimal_growt
         ax.set_xlabel("Longitude")
         ax.set_ylabel("Latitude")
         ax.set_title("Year " + str(year + 1))
-        if global_or_US == "US":
+        if global_or_country == "US":
             ax.set_ylim(18, 55)
             ax.set_xlim(-130, -65)
+        elif global_or_country == "AUS":
+            ax.set_ylim(-50, -10)
+            ax.set_xlim(100, 180)
         else:
             ax.set_ylim(-75, 85)
             ax.set_xlim(-180, 180)
@@ -131,7 +139,7 @@ def growth_rate_spatial_by_year(growth_df, global_or_US, scenario, optimal_growt
             + "growth_rate_spatial_year_"
             + str(year + 1)
             + "_"
-            + global_or_US
+            + global_or_country
             + ".png",
             dpi=350,
             bbox_inches="tight",
@@ -139,7 +147,7 @@ def growth_rate_spatial_by_year(growth_df, global_or_US, scenario, optimal_growt
 
 
 def cluster_timeseries_all_parameters_q_lines(
-    parameters, global_or_US, scenario, areas
+    parameters, global_or_country, scenario, areas
 ):
     """
     Plots line plots for all clusters and all parameters
@@ -160,7 +168,8 @@ def cluster_timeseries_all_parameters_q_lines(
         "temp_factor": "Temperature Factor",
         "seaweed_growth_rate": "Total Growth Factor",
     }
-    clusters = 4 if global_or_US == "US" else 3
+    num_clusters = {"global": 3, "US": 4, "AUS": 2}
+    clusters = num_clusters[global_or_country]
     fig, axes = plt.subplots(
         nrows=5, ncols=clusters, sharey=True, sharex=True, figsize=(12, 12)
     )
@@ -218,7 +227,7 @@ def cluster_timeseries_all_parameters_q_lines(
                 ax.set_ylabel(parameter_names[parameter])
             if i == 4:
                 ax.set_xlabel("Months since nuclear war")
-            if i == 0:
+            if i == 0 and global_or_country == "global":
                 ax.set_title(
                     "Cluster: "
                     + str(cluster)
@@ -268,7 +277,7 @@ def cluster_timeseries_all_parameters_q_lines(
         + scenario
         + os.sep
         + "cluster_timeseries_all_param_q_lines_"
-        + global_or_US
+        + global_or_country
         + ".png",
         dpi=350,
         bbox_inches="tight",
@@ -465,12 +474,12 @@ def compare_nutrient_subfactors(nitrate, ammonium, phosphate, scenario, areas):
     )
 
 
-def main(scenario, global_or_US, optimal_growth_rate):
+def main(scenario, global_or_country, optimal_growth_rate):
     """
     Runs the other functions to read the data and make the plots
     Arguments:
         scenario: The scenario to plot
-        global_or_US: Whether to plot the global or US scenario
+        global_or_country: Whether to plot the global or a country scenario
         optimal_growth_rate: The maximum growth rate
     Returns:
         None
@@ -490,7 +499,7 @@ def main(scenario, global_or_US, optimal_growth_rate):
             + scenario
             + os.sep
             + "seaweed_growth_rate_clustered_"
-            + global_or_US
+            + global_or_country
             + ".pkl"
         )
     )
@@ -502,8 +511,8 @@ def main(scenario, global_or_US, optimal_growth_rate):
     # Fix the geometry
     growth_df = prepare_geometry(growth_df)
     # Make the spatial plots
-    cluster_spatial(growth_df, global_or_US, scenario)
-    growth_rate_spatial_by_year(growth_df, global_or_US, scenario, optimal_growth_rate)
+    cluster_spatial(growth_df, global_or_country, scenario)
+    growth_rate_spatial_by_year(growth_df, global_or_country, scenario, optimal_growth_rate)
     # Read in the other parameters for the line plots
     parameters = {}
     parameter_names = [
@@ -528,7 +537,7 @@ def main(scenario, global_or_US, optimal_growth_rate):
                 + os.sep
                 + parameter
                 + "_clustered_"
-                + global_or_US
+                + global_or_country
                 + ".pkl"
             )
         )
@@ -548,7 +557,7 @@ def main(scenario, global_or_US, optimal_growth_rate):
     del parameters["ammonium_subfactor"]
     del parameters["phosphate_subfactor"]
     # Plot the timeseries that compares how the parameters change over time
-    cluster_timeseries_all_parameters_q_lines(parameters, global_or_US, scenario, areas)
+    cluster_timeseries_all_parameters_q_lines(parameters, global_or_country, scenario, areas)
 
 
 if __name__ == "__main__":

@@ -43,7 +43,7 @@ def get_parameter_dataframe(parameter, path, file):
     return param_df
 
 
-def time_series_analysis(growth_df, n_clusters, global_or_US):
+def time_series_analysis(growth_df, n_clusters, global_or_country):
     """
     Does time series analysis on the dataframe
     All the time serieses are clustered based on their
@@ -66,14 +66,14 @@ def time_series_analysis(growth_df, n_clusters, global_or_US):
     )
     # A good rule of thumb is choosing k as the square root of the number
     # of points in the training data set in kNN
-    cores = None if global_or_US == "US" else -1  # define the cores to use
+    cores = -1  # define the cores to use
     km = TimeSeriesKMeans(n_clusters=n_clusters, metric="dtw", n_jobs=cores)
     timeseries_ds = to_time_series_dataset(growth_df_scaled)
     labels = km.fit_predict(timeseries_ds)
     return labels, km
 
 
-def elbow_method(growth_df, max_clusters, global_or_US, scenario):
+def elbow_method(growth_df, max_clusters, global_or_country, scenario):
     """
     Finds the optimal number of clusters using the elbow method
     https://predictivehacks.com/k-means-elbow-method-code-for-python/
@@ -87,7 +87,7 @@ def elbow_method(growth_df, max_clusters, global_or_US, scenario):
     inertias = {}
     for i in range(2, max_clusters):
         print("Trying {} clusters".format(i))
-        labels, km = time_series_analysis(growth_df, i, global_or_US)
+        labels, km = time_series_analysis(growth_df, i, global_or_country)
         inertias[i] = km.inertia_
     inertias_df = pd.DataFrame.from_dict(inertias, orient="index")
     inertias_df.to_csv(
@@ -98,7 +98,7 @@ def elbow_method(growth_df, max_clusters, global_or_US, scenario):
         + scenario
         + os.sep
         + "inertias_"
-        + global_or_US
+        + global_or_country
         + ".csv",
         sep=";",
     )
@@ -113,7 +113,7 @@ def elbow_method(growth_df, max_clusters, global_or_US, scenario):
         + "elbow_plots"
         + os.sep
         + "elbow_method_"
-        + global_or_US
+        + global_or_country
         + "_"
         + scenario
         + ".png"
@@ -171,7 +171,7 @@ def lme(scenario):
             )
 
 
-def grid(scenario, global_or_US, with_elbow_method=False):
+def grid(scenario, global_or_country, with_elbow_method=False):
     """
     Calculates growth rate and all the factors for the grid
     and saves it in files appropriate for the plotting functions
@@ -201,12 +201,12 @@ def grid(scenario, global_or_US, with_elbow_method=False):
         + scenario
         + os.sep
         + "seaweed_growth_rate_"
-        + global_or_US
+        + global_or_country
         + ".pkl"
     ):
         print("Creating the dataframe")
         path = "data" + os.sep + "interim_data" + os.sep + scenario
-        file = "data_gridded_all_parameters_" + global_or_US + ".pkl"
+        file = "data_gridded_all_parameters_" + global_or_country + ".pkl"
         # Get all the parameters
         for parameter in parameters:
             print("Getting parameter {}".format(parameter))
@@ -221,7 +221,7 @@ def grid(scenario, global_or_US, with_elbow_method=False):
                 + os.sep
                 + parameter
                 + "_"
-                + global_or_US
+                + global_or_country
                 + ".pkl"
             )
     if with_elbow_method:
@@ -234,13 +234,13 @@ def grid(scenario, global_or_US, with_elbow_method=False):
             + scenario
             + os.sep
             + "seaweed_growth_rate_"
-            + global_or_US
+            + global_or_country
             + ".pkl"
         )
-        elbow_method(growth_df, 7, global_or_US, scenario)
-    # elbow method says 4 is the optimal number of clusters for US
-    # and 3 for the whole world
-    number_of_clusters = 3 if global_or_US == "global" else 4
+        elbow_method(growth_df, 7, global_or_country, scenario)
+    # elbow method says 3 is the optimal number of clusters
+    num_clusters = {"global": 3, "US": 4, "AUS": 2}
+    number_of_clusters = num_clusters[global_or_country]
     # Check if the files already exist
     if not os.path.isfile(
         "data"
@@ -250,7 +250,7 @@ def grid(scenario, global_or_US, with_elbow_method=False):
         + scenario
         + os.sep
         + "seaweed_growth_rate_clustered_"
-        + global_or_US
+        + global_or_country
         + ".pkl"
     ):
         # Cluster the data
@@ -263,11 +263,11 @@ def grid(scenario, global_or_US, with_elbow_method=False):
             + scenario
             + os.sep
             + "seaweed_growth_rate_"
-            + global_or_US
+            + global_or_country
             + ".pkl"
         )
         # Cluster only the growth data, as the other parameters all have the same shape
-        labels, km = time_series_analysis(growth_df, number_of_clusters, global_or_US)
+        labels, km = time_series_analysis(growth_df, number_of_clusters, global_or_country)
         growth_df["cluster"] = labels
         for parameter in parameters:
             print("Getting parameter {} for clustering".format(parameter))
@@ -280,7 +280,7 @@ def grid(scenario, global_or_US, with_elbow_method=False):
                 + os.sep
                 + parameter
                 + "_"
-                + global_or_US
+                + global_or_country
                 + ".pkl"
             )
             # Add the cluster labels to the dataframe
@@ -294,7 +294,7 @@ def grid(scenario, global_or_US, with_elbow_method=False):
                 + os.sep
                 + parameter
                 + "_clustered_"
-                + global_or_US
+                + global_or_country
                 + ".pkl"
             )
     else:
@@ -306,7 +306,7 @@ def grid(scenario, global_or_US, with_elbow_method=False):
             + scenario
             + os.sep
             + "seaweed_growth_rate_clustered_"
-            + global_or_US
+            + global_or_country
             + ".pkl"
         )
 
