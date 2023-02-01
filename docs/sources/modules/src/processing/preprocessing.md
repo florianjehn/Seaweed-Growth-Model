@@ -29,7 +29,7 @@ None
 [source](https://github.com/allfed/Seaweed-Growth-Model/blob/master/src/processing/preprocessing.py/#L31)
 ```python
 .prepare_gridded_data(
-   path, folder, scenario, file_ending, global_or_US
+   path, folder, scenario, file_ending, global_or_country
 )
 ```
 
@@ -44,7 +44,7 @@ the rest of the code.
 * **path**  : the path for the pickled files
 * **folder**  : the folder where the pickled files are
 * **file_ending**  : the ending of the pickled files
-* **global_or_US**  : if "global", the global data is used
+* **global_or_country**  : if "global", the global data is used
 * **scenario**  : the scenario to use (e.g. 150tg)
 
 
