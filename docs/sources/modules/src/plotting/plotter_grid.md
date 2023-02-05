@@ -5,7 +5,7 @@
 [source](https://github.com/allfed/Seaweed-Growth-Model/blob/master/src/plotting/plotter_grid.py/#L23)
 ```python
 .cluster_spatial(
-   growth_df, global_or_US, scenario
+   growth_df, global_or_country, scenario
 )
 ```
 
@@ -15,7 +15,7 @@ Creates a spatial plot of the clusters
 **Arguments**
 
 * **growth_df**  : a dataframe of the growth rate
-* **global_or_US**  : a string of either "global" or "US" that indicates the scale
+* **global_or_country**  : a string of either "global" or "US" that indicates the scale
 
 
 **Returns**
@@ -26,10 +26,10 @@ None, but saves the plot
 
 
 ### growth_rate_spatial_by_year
-[source](https://github.com/allfed/Seaweed-Growth-Model/blob/master/src/plotting/plotter_grid.py/#L74)
+[source](https://github.com/allfed/Seaweed-Growth-Model/blob/master/src/plotting/plotter_grid.py/#L77)
 ```python
 .growth_rate_spatial_by_year(
-   growth_df, global_or_US, scenario, optimal_growth_rate
+   growth_df, global_or_country, scenario, optimal_growth_rate
 )
 ```
 
@@ -50,10 +50,10 @@ None, but saves the plot
 
 
 ### cluster_timeseries_all_parameters_q_lines
-[source](https://github.com/allfed/Seaweed-Growth-Model/blob/master/src/plotting/plotter_grid.py/#L141)
+[source](https://github.com/allfed/Seaweed-Growth-Model/blob/master/src/plotting/plotter_grid.py/#L149)
 ```python
 .cluster_timeseries_all_parameters_q_lines(
-   parameters, global_or_US, scenario, areas
+   parameters, global_or_country, scenario, areas
 )
 ```
 
@@ -73,7 +73,7 @@ None, but saves the plot
 
 
 ### compare_nw_scenarios
-[source](https://github.com/allfed/Seaweed-Growth-Model/blob/master/src/plotting/plotter_grid.py/#L279)
+[source](https://github.com/allfed/Seaweed-Growth-Model/blob/master/src/plotting/plotter_grid.py/#L288)
 ```python
 .compare_nw_scenarios(
    areas, optimal_growth_rate
@@ -97,7 +97,7 @@ None
 
 
 ### compare_nutrient_subfactors
-[source](https://github.com/allfed/Seaweed-Growth-Model/blob/master/src/plotting/plotter_grid.py/#L400)
+[source](https://github.com/allfed/Seaweed-Growth-Model/blob/master/src/plotting/plotter_grid.py/#L409)
 ```python
 .compare_nutrient_subfactors(
    nitrate, ammonium, phosphate, scenario, areas
