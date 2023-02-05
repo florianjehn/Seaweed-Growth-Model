@@ -20,7 +20,7 @@ plt.style.use(
 )
 
 
-def cluster_spatial(growth_df, global_or_country, scenario):
+def cluster_spatial(growth_df, global_or_country, scenario, admin_1=False):
     """
     Creates a spatial plot of the clusters
     Arguments:
@@ -37,16 +37,22 @@ def cluster_spatial(growth_df, global_or_country, scenario):
 
     print("Plotting cluster spatial")
     growth_df = growth_df.loc[:, ["cluster", "geometry"]]
+    if admin_1:
+        global_map_admin_1 = gpd.read_file(
+            "data/geospatial_information/Countries_Admin_1/ne_50m_admin_1_states_provinces.shp"
+        )
     global_map = gpd.read_file(
-        "data/geospatial_information/Countries/ne_50m_admin_0_countries.shp"
-    )
+            "data/geospatial_information/Countries/ne_50m_admin_0_countries.shp"
+        )
     growth_df.set_crs(epsg=4326, inplace=True)
     growth_df.to_crs(global_map.crs, inplace=True)
     growth_df["cluster"] = growth_df["cluster"].astype(str)
-    ax = growth_df.plot(column="cluster", legend=True, cmap=custom_map, marker='s', markersize=80)
+    ax = growth_df.plot(column="cluster", legend=True, cmap=custom_map, marker='s', markersize=85)
     fig = plt.gcf()
     fig.set_size_inches(12, 12)
     global_map.plot(ax=ax, color="lightgrey", edgecolor="black", linewidth=0.2)
+    if admin_1:
+        global_map_admin_1.plot(ax=ax, color="lightgrey", edgecolor="black", linewidth=0.2)
     ax.set_xlabel("Longitude")
     ax.set_ylabel("Latitude")
     ax.get_legend().set_title("Cluster")
@@ -54,8 +60,8 @@ def cluster_spatial(growth_df, global_or_country, scenario):
         ax.set_ylim(18, 55)
         ax.set_xlim(-130, -65)
     elif global_or_country == "AUS":
-        ax.set_ylim(-50, -10)
-        ax.set_xlim(100, 180)
+        ax.set_ylim(-47, -10)
+        ax.set_xlim(105, 180)
     else:
         ax.set_ylim(-75, 85)
         ax.set_xlim(-180, 180)
@@ -108,7 +114,7 @@ def growth_rate_spatial_by_year(growth_df, global_or_country, scenario, optimal_
             legend=True,
             cmap="viridis",
             marker='s',
-            markersize=80,
+            markersize=85,
             vmin=0,
             vmax=optimal_growth_rate,
             legend_kwds={
@@ -124,8 +130,8 @@ def growth_rate_spatial_by_year(growth_df, global_or_country, scenario, optimal_
             ax.set_ylim(18, 55)
             ax.set_xlim(-130, -65)
         elif global_or_country == "AUS":
-            ax.set_ylim(-50, -10)
-            ax.set_xlim(100, 180)
+            ax.set_ylim(-47, -10)
+            ax.set_xlim(105, 180)
         else:
             ax.set_ylim(-75, 85)
             ax.set_xlim(-180, 180)
@@ -474,7 +480,7 @@ def compare_nutrient_subfactors(nitrate, ammonium, phosphate, scenario, areas):
     )
 
 
-def main(scenario, global_or_country, optimal_growth_rate):
+def plot(scenario, global_or_country, optimal_growth_rate, admin_1=False):
     """
     Runs the other functions to read the data and make the plots
     Arguments:
@@ -511,7 +517,7 @@ def main(scenario, global_or_country, optimal_growth_rate):
     # Fix the geometry
     growth_df = prepare_geometry(growth_df)
     # Make the spatial plots
-    cluster_spatial(growth_df, global_or_country, scenario)
+    cluster_spatial(growth_df, global_or_country, scenario, admin_1)
     growth_rate_spatial_by_year(growth_df, global_or_country, scenario, optimal_growth_rate)
     # Read in the other parameters for the line plots
     parameters = {}
