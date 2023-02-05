@@ -5,7 +5,7 @@
 [source](https://github.com/allfed/Seaweed-Growth-Model/blob/master/src/plotting/plotter_grid.py/#L23)
 ```python
 .cluster_spatial(
-   growth_df, global_or_country, scenario
+   growth_df, global_or_country, scenario, admin_1 = False
 )
 ```
 
@@ -26,7 +26,7 @@ None, but saves the plot
 
 
 ### growth_rate_spatial_by_year
-[source](https://github.com/allfed/Seaweed-Growth-Model/blob/master/src/plotting/plotter_grid.py/#L77)
+[source](https://github.com/allfed/Seaweed-Growth-Model/blob/master/src/plotting/plotter_grid.py/#L83)
 ```python
 .growth_rate_spatial_by_year(
    growth_df, global_or_country, scenario, optimal_growth_rate
@@ -50,7 +50,7 @@ None, but saves the plot
 
 
 ### cluster_timeseries_all_parameters_q_lines
-[source](https://github.com/allfed/Seaweed-Growth-Model/blob/master/src/plotting/plotter_grid.py/#L149)
+[source](https://github.com/allfed/Seaweed-Growth-Model/blob/master/src/plotting/plotter_grid.py/#L155)
 ```python
 .cluster_timeseries_all_parameters_q_lines(
    parameters, global_or_country, scenario, areas
@@ -73,7 +73,7 @@ None, but saves the plot
 
 
 ### compare_nw_scenarios
-[source](https://github.com/allfed/Seaweed-Growth-Model/blob/master/src/plotting/plotter_grid.py/#L288)
+[source](https://github.com/allfed/Seaweed-Growth-Model/blob/master/src/plotting/plotter_grid.py/#L294)
 ```python
 .compare_nw_scenarios(
    areas, optimal_growth_rate
@@ -97,7 +97,7 @@ None
 
 
 ### compare_nutrient_subfactors
-[source](https://github.com/allfed/Seaweed-Growth-Model/blob/master/src/plotting/plotter_grid.py/#L409)
+[source](https://github.com/allfed/Seaweed-Growth-Model/blob/master/src/plotting/plotter_grid.py/#L415)
 ```python
 .compare_nutrient_subfactors(
    nitrate, ammonium, phosphate, scenario, areas
@@ -115,6 +115,31 @@ in the same plot to be able to compare them.
 * **phosphate**  : The phosphate subfactor
 * **scenario**  : The scenario to plot
 * **areas**  : The areas of the grid cells
+
+
+**Returns**
+
+None
+
+----
+
+
+### plot
+[source](https://github.com/allfed/Seaweed-Growth-Model/blob/master/src/plotting/plotter_grid.py/#L483)
+```python
+.plot(
+   scenario, global_or_country, optimal_growth_rate, admin_1 = False
+)
+```
+
+---
+Runs the other functions to read the data and make the plots
+
+**Arguments**
+
+* **scenario**  : The scenario to plot
+* **global_or_country**  : Whether to plot the global or a country scenario
+* **optimal_growth_rate**  : The maximum growth rate
 
 
 **Returns**
